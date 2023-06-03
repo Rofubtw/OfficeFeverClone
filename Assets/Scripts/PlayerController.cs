@@ -17,6 +17,10 @@ public class PlayerController : MonoBehaviour
     private bool _isMoving;
 
 
+    private float speed => movementSpeed * Time.deltaTime;
+    private float rotSpeed => rotationSpeed * Time.deltaTime;
+
+
     private void Update() => MoveAndRotateCharacter();
 
 
@@ -25,29 +29,30 @@ public class PlayerController : MonoBehaviour
         if (Input.touchCount > 0)
         {
             _touch = Input.GetTouch(0);
+            
             if (_touch.phase == TouchPhase.Began)
             {
                 _dragStarted = true;
                 _isMoving = true;
                 _touchFirst = _touch.position;
-                _touchLast = _touch.position;
             }
-        }
-        if (_dragStarted)
-        {
-            if (_touch.phase == TouchPhase.Moved)
+            if (_dragStarted)
             {
-                _touchLast = _touch.position;
+                if (_touch.phase == TouchPhase.Moved)
+                {
+                    _touchLast = _touch.position;
+                    
+                    transform.position += transform.forward * speed;
+
+                    transform.forward = CalculateNormalizedDirection() * rotSpeed;
+                }
+                if (_touch.phase == TouchPhase.Ended)
+                {
+                    _isMoving = false;
+                    _dragStarted = false;
+                }
             }
-            if (_touch.phase == TouchPhase.Ended)
-            {
-                _touchLast = _touch.position;
-                _isMoving = false;
-                _dragStarted = false;
-            }
-            gameObject.transform.rotation = Quaternion.RotateTowards(transform.rotation, CalculateRotation(), rotationSpeed * Time.deltaTime);
-            gameObject.transform.Translate(Vector3.forward * Time.deltaTime * movementSpeed);
-        }
+        }   
     }
 
     public bool IsMoving()
