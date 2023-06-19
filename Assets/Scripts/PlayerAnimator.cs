@@ -9,20 +9,13 @@ public class PlayerAnimator : MonoBehaviour
     private const string IS_MOVING = "IsMoving";
 
 
-    [SerializeField] private PlayerController playerController;
-
-
-    private Animator _animator;
-
-
-    private void Awake()
-    {
-        _animator = GetComponent<Animator>();
-    }
+    [SerializeField] private Player player;
+    [SerializeField] private Animator animator;
+    
 
     private void Update()
     {
-        _animator.SetBool(IS_MOVING, playerController.IsMoving());
+        animator.SetBool(IS_MOVING, player.IsMoving());
     }
 
 }
