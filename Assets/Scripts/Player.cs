@@ -26,6 +26,7 @@ public class Player : MonoBehaviour
     private Vector3 _touchLast;
     private bool _dragStarted;
     private bool _isMoving;
+    private bool _isCarrying;
     private Vector3 _lastInteractDir;
 
     private float speed => movementSpeed * Time.deltaTime;
@@ -47,11 +48,17 @@ public class Player : MonoBehaviour
     }
 
     public bool IsMoving() => _isMoving;
+    public bool IsCarrying() => _isCarrying;
 
     private void MovePapers()
     {
-        if (carriedPaperList.Count <= 1) return;
+        if (carriedPaperList.Count <= 1)
+        {
+            _isCarrying = false;
+            return;
+        }
 
+        _isCarrying = true;
         var downPaper = carriedPaperList[0];
         downPaper.position = paperLocation.position;
 
