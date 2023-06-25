@@ -14,7 +14,7 @@ public class Player : MonoBehaviour
 
     public Transform transportedPapers;
     public int carryablePaper;
-    public List<Transform> carriedPaperList = new List<Transform>();
+    public List<Transform> carriedPaperList;
     public Transform paperLocation;
 
     private const float PlayerHeight = 2f;
@@ -60,15 +60,15 @@ public class Player : MonoBehaviour
 
         _isCarrying = true;
         var downPaper = carriedPaperList[0];
-        downPaper.position = paperLocation.position;
+        downPaper.transform.position = paperLocation.position;
 
         for (int i = 1; i < carriedPaperList.Count; i++)
         {
             var firstPaper = carriedPaperList[i - 1];
             var secondPaper = carriedPaperList[i];
-            secondPaper.position = Vector3.Lerp(
-                secondPaper.position,
-                new Vector3(firstPaper.position.x, firstPaper.position.y + 0.1f, firstPaper.position.z),
+            secondPaper.transform.position = Vector3.Lerp(
+                secondPaper.transform.position,
+                new Vector3(firstPaper.transform.position.x, firstPaper.transform.position.y + 0.1f, firstPaper.transform.position.z),
                 45f * Time.deltaTime);
         }
     }

@@ -1,10 +1,11 @@
 using System.Collections;
 using System.Collections.Generic;
-using DG.Tweening;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class PhotoCopier : MonoBehaviour
 {
+
     private const int MaximumPapers = 50;
     private const float PaperSpawnHeight = -3f;
     private const float JumpPower = 2f;
@@ -13,60 +14,54 @@ public class PhotoCopier : MonoBehaviour
     private const int MaximumHeightIndex = 9;
     private const float HeightIncrease = .11f;
     private const float PaperCollectTimeMax = .2f;
+    private const int ObjectsPerRow = 5; // Bir sýradaki obje sayýsý
+    private const int RowsPerColumn = 2;
 
     [SerializeField] private Player player;
     [SerializeField] private Transform[] papersSpawnPlace;
     [SerializeField] private GameObject paperPrefab;
     [SerializeField] private Transform paperParent;
+    [SerializeField] private Transform target;
+    [SerializeField] private Transform movingTarget;
+    [SerializeField] private Transform secondTarget;
+    [SerializeField] private Transform thirdTarget;
+    [SerializeField] private Transform fourthTarget;
     [SerializeField] private float paperDeliveryTime;
-
+    
+    private List<Transform> _papers = new List<Transform>();
+    private Stack<Transform> _deskPapers = new Stack<Transform>();
     private float paperCollectTimer;
-    private float yAxis;
-    private int countPapers;
-    private List<Transform> paperList = new List<Transform>();
+    private Vector3 _offsetx = new Vector3(.5f, 0, 0);
+    private Vector3 _offsety = new Vector3(0, .2f, 0);
+    private Vector3 _offsetz = new Vector3(0, 0, .8f);
 
     private void Start() => StartCoroutine(PaperSpawningRoutine(paperDeliveryTime));
 
-    private Transform SpawnPaper(int heightIndex)
-    {
-        Vector3 position = new Vector3(transform.position.x, PaperSpawnHeight, transform.position.z);
-
-        GameObject newPaper = Instantiate(paperPrefab, position, Quaternion.identity);
-        paperList.Add(newPaper.transform);
-
-        newPaper.transform.SetParent(paperParent);
-        return newPaper.transform;
-    }
-
+    
     public IEnumerator PaperSpawningRoutine(float time)
     {
-        int heightIndex = 0;
-
         while (true)
         {
-            if (paperList.Count < MaximumPapers)
+            if (_papers.Count < MaximumPapers)
             {
-                Transform newPaper = SpawnPaper(heightIndex);
+                Transform newPaper = SpawnPaper();
 
-                JumpPaperToDestination(newPaper, heightIndex);
+                OrganizePapers();
 
-                heightIndex = (heightIndex < MaximumHeightIndex) ? heightIndex + 1 : 0;
-                if (heightIndex == 0)
-                {
-                    yAxis += HeightIncrease;
-                    countPapers++;
-                }
             }
             yield return new WaitForSecondsRealtime(time);
         }
     }
 
-    private void JumpPaperToDestination(Transform paper, int heightIndex)
+    private Transform SpawnPaper()
     {
-        Vector3 jumpDestination = papersSpawnPlace[heightIndex].position;
-        jumpDestination.y += yAxis;
+        Vector3 position = target.position;
 
-        paper.transform.DOJump(jumpDestination, JumpPower, JumpTimes, JumpDuration).SetEase(Ease.OutQuad);
+        GameObject newPaper = Instantiate(paperPrefab, position, Quaternion.identity);
+        _deskPapers.Push(newPaper.transform);
+        _papers.Add(_deskPapers.Pop());
+        newPaper.transform.SetParent(paperParent);
+        return newPaper.transform;
     }
 
     public void PaperCollectTimer()
@@ -79,24 +74,32 @@ public class PhotoCopier : MonoBehaviour
 
         if (TryMovePaperFromCopierToPlayer())
         {
-            countPapers--;
-            if (yAxis > 0)
-                yAxis -= HeightIncrease;
+
         }
     }
 
     private bool TryMovePaperFromCopierToPlayer()
     {
-        int lastIndex = paperList.Count - 1;
-
-        if (lastIndex < 0 || Player.Instance.carriedPaperList.Count >= Player.Instance.carryablePaper || paperList.Count <= 2)
+        if (_papers.Count < 0 || Player.Instance.carriedPaperList.Count >= Player.Instance.carryablePaper || _papers.Count <= 2)
             return false;
 
-        Transform paper = paperList[lastIndex];
-        paperList.RemoveAt(lastIndex);
+        Transform paper = _papers[^1];
         Player.Instance.carriedPaperList.Add(paper);
+        _papers.Remove(paper);
 
-        paper.SetParent(null);
         return true;
+    }
+    private void OrganizePapers()
+    {
+        int i = 0;
+        foreach (Transform paper in _papers)
+        {
+            Vector3 position = target.position
+                               + (i % ObjectsPerRow) * _offsetx  // x eksenindeki konum
+                               + (i / (ObjectsPerRow * RowsPerColumn)) * _offsety // z eksenindeki konum
+                               + ((i / ObjectsPerRow) % RowsPerColumn) * _offsetz; // y eksenindeki konum
+            paper.transform.position = position;
+            i++;
+        }
     }
 }
