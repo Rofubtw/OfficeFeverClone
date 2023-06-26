@@ -7,25 +7,14 @@ public class PhotoCopier : MonoBehaviour
 {
 
     private const int MaximumPapers = 50;
-    private const float PaperSpawnHeight = -3f;
-    private const float JumpPower = 2f;
-    private const int JumpTimes = 1;
-    private const float JumpDuration = .5f;
-    private const int MaximumHeightIndex = 9;
-    private const float HeightIncrease = .11f;
     private const float PaperCollectTimeMax = .2f;
-    private const int ObjectsPerRow = 5; // Bir sýradaki obje sayýsý
+    private const int ObjectsPerRow = 5;
     private const int RowsPerColumn = 2;
 
     [SerializeField] private Player player;
-    [SerializeField] private Transform[] papersSpawnPlace;
     [SerializeField] private GameObject paperPrefab;
     [SerializeField] private Transform paperParent;
     [SerializeField] private Transform target;
-    [SerializeField] private Transform movingTarget;
-    [SerializeField] private Transform secondTarget;
-    [SerializeField] private Transform thirdTarget;
-    [SerializeField] private Transform fourthTarget;
     [SerializeField] private float paperDeliveryTime;
     
     private List<Transform> _papers = new List<Transform>();
