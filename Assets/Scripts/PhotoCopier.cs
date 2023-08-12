@@ -11,10 +11,9 @@ public class PhotoCopier : MonoBehaviour
     private const int ObjectsPerRow = 5;
     private const int RowsPerColumn = 2;
 
-    [SerializeField] private Player player;
     [SerializeField] private GameObject paperPrefab;
     [SerializeField] private Transform paperParent;
-    [SerializeField] private Transform target;
+    [SerializeField] private Transform paperTarget;
     [SerializeField] private float paperDeliveryTime;
     
     private List<Transform> _papers = new List<Transform>();
@@ -44,7 +43,7 @@ public class PhotoCopier : MonoBehaviour
 
     private Transform SpawnPaper()
     {
-        Vector3 position = target.position;
+        Vector3 position = paperTarget.position;
 
         GameObject newPaper = Instantiate(paperPrefab, position, Quaternion.identity);
         _deskPapers.Push(newPaper.transform);
@@ -83,10 +82,10 @@ public class PhotoCopier : MonoBehaviour
         int i = 0;
         foreach (Transform paper in _papers)
         {
-            Vector3 position = target.position
+            Vector3 position = paperTarget.position
                                + (i % ObjectsPerRow) * _offsetx  // x eksenindeki konum
-                               + (i / (ObjectsPerRow * RowsPerColumn)) * _offsety // z eksenindeki konum
-                               + ((i / ObjectsPerRow) % RowsPerColumn) * _offsetz; // y eksenindeki konum
+                               + (i / (ObjectsPerRow * RowsPerColumn)) * _offsety // y eksenindeki konum
+                               + ((i / ObjectsPerRow) % RowsPerColumn) * _offsetz; // z eksenindeki konum
             paper.transform.position = position;
             i++;
         }

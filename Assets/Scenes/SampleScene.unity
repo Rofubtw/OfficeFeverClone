@@ -790,11 +790,6 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 33072141607935102, guid: fa1a140fcc9db7841b8c23e476fccb9b,
-        type: 3}
-      propertyPath: m_IsActive
-      value: 0
-      objectReference: {fileID: 0}
     - target: {fileID: 3563900348423799877, guid: fa1a140fcc9db7841b8c23e476fccb9b,
         type: 3}
       propertyPath: m_Name
@@ -1262,12 +1257,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ac0b09e7857660247b1477e93731de29, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!4 &2134423155 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 4893248515191956059, guid: bb0a38ffe12488347831c8beea212a9d,
-    type: 3}
-  m_PrefabInstance: {fileID: 8886770461122679937}
-  m_PrefabAsset: {fileID: 0}
 --- !u!4 &165854950725035122
 Transform:
   m_ObjectHideFlags: 0
@@ -2356,7 +2345,7 @@ PrefabInstance:
         type: 3}
       propertyPath: movingTarget
       value: 
-      objectReference: {fileID: 2134423155}
+      objectReference: {fileID: 0}
     - target: {fileID: 6238606080423814511, guid: bb0a38ffe12488347831c8beea212a9d,
         type: 3}
       propertyPath: paperDeliveryTime
